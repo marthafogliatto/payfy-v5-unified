@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payfy V5 — Dashboard de Revisão de Gastos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-orange: #E55A20;
+            --primary-orange-dark: #C94D1A;
+            --primary-orange-light: #FFF3ED;
+            --success-green: #059669;
+            --success-green-light: #D1FAE5;
+            --warning-yellow: #D97706;
+            --warning-yellow-light: #FEF3C7;
+            --info-blue: #3B82F6;
+            --info-blue-light: #EFF6FF;
+            --purple: #8B5CF6;
+            --purple-light: #EDE9FE;
+            --danger-red: #DC2626;
+            --danger-red-light: #FEE2E2;
+            --blue-50: #EFF6FF;
+            --blue-200: #BFDBFE;
+            --blue-700: #1E40AF;
+            --blue-800: #1E3A8A;
+            --amber-600: #D97706;
+            --amber-900: #92400E;
+            --green-800: #065F46;
+            --red-700: #DC2626;
+            --slate-100: #F1F5F9;
+            --yellow-300: #FDE68A;
+            --badge-agent-bg: #D1FAE5;
+            --badge-agent-text: #065F46;
+            --badge-flag-bg: #FEE2E2;
+            --badge-flag-text: #991B1B;
+            --badge-confidential-bg: #FEF3C7;
+            --badge-confidential-text: #92400E;
+            --badge-brasil-bg: #D1FAE5;
+            --badge-brasil-text: #065F46;
+            --gray-50: #FAFAFA;
+            --gray-100: #F5F5F5;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+            --white: #FFFFFF;
+            --border: #E5E7EB;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --radius-sm: 4px;
+            --radius-md: 6px;
+            --radius-lg: 8px;
+            --radius-xl: 12px;
+            --radius-2xl: 16px;
+            --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-700);
+            line-height: 1.5;
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(100%); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+
+        /* ─── Focus ─── */
+        *:focus-visible {
+            outline: 2px solid var(--info-blue);
+            outline-offset: 2px;
+        }
+
+        /* ─── Header ─── */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: var(--spacing-lg) 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-orange);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        .header-center strong {
+            color: var(--gray-700);
+            font-weight: 600;
+        }
+        .header-right a {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-orange);
+            text-decoration: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            transition: background 0.2s;
+            min-height: 44px;
+        }
+        .header-right a:hover {
+            background: var(--primary-orange-light);
+        }
+
+        /* ─── Container ─── */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        /* ─── Page Title ─── */
+        .page-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+        }
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* ─── KPI Grid ─── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        .kpi-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+            border-left: 4px solid var(--kpi-accent);
+        }
+        .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.15s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.2s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.25s; }
+        .kpi-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        .kpi-card-header {
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: linear-gradient(135deg, var(--kpi-gradient-start), var(--kpi-gradient-end));
+        }
+        .kpi-card-header-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--kpi-label-color);
+        }
+        .kpi-card-body {
+            padding: var(--spacing-md);
+        }
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gray-900);
+            line-height: 1.1;
+        }
+        .kpi-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* ─── Filter Bar ─── */
+        .filter-bar {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md) var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-sm);
+            animation: fadeIn 0.3s ease forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .filter-group-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .filter-pills {
+            display: flex;
+            gap: var(--spacing-xs);
+            background: var(--slate-100);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-xs);
+        }
+        .filter-pill {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-600);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        .filter-pill:hover {
+            color: var(--gray-900);
+        }
+        .filter-pill.active {
+            background: var(--white);
+            color: var(--gray-900);
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+        .filter-search {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .filter-search input {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-left: var(--spacing-xl);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--gray-700);
+            background: var(--white);
+            min-height: 44px;
+            transition: border-color 0.2s;
+        }
+        .filter-search input::placeholder {
+            color: var(--gray-400);
+        }
+        .filter-search input:focus {
+            border-color: var(--info-blue);
+            outline: none;
+        }
+        .filter-search-icon {
+            position: absolute;
+            left: var(--spacing-sm);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 14px;
+            pointer-events: none;
+        }
+        .filter-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-size: 12px;
+        }
+        .filter-count {
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+        .filter-clear {
+            color: var(--primary-orange);
+            font-weight: 600;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: inherit;
+            min-height: 44px;
+            padding: var(--spacing-sm);
+        }
+        .filter-clear:hover {
+            text-decoration: underline;
+        }
+
+        /* ─── Review Layout ─── */
+        .review-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: var(--spacing-xl);
+        }
+
+        /* ─── Transaction List ─── */
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .transaction-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            border-left: 4px solid var(--card-color);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+        .transaction-card:nth-child(1) { animation-delay: 0.1s; }
+        .transaction-card:nth-child(2) { animation-delay: 0.15s; }
+        .transaction-card:nth-child(3) { animation-delay: 0.2s; }
+        .transaction-card:nth-child(4) { animation-delay: 0.25s; }
+        .transaction-card:nth-child(5) { animation-delay: 0.3s; }
+        .transaction-card:nth-child(6) { animation-delay: 0.35s; }
+        .transaction-card:nth-child(7) { animation-delay: 0.4s; }
+        .transaction-card:nth-child(8) { animation-delay: 0.45s; }
+        .transaction-card:nth-child(9) { animation-delay: 0.5s; }
+        .transaction-card:nth-child(10) { animation-delay: 0.55s; }
+        .transaction-card:nth-child(11) { animation-delay: 0.6s; }
+        .transaction-card:nth-child(12) { animation-delay: 0.65s; }
+        .transaction-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .transaction-card.decided {
+            opacity: 0.6;
+        }
+        .transaction-card.decided .transaction-header {
+            cursor: default;
+        }
+        .transaction-card.override-applied {
+            border-left-color: var(--warning-yellow);
+        }
+
+        .transaction-header {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md) var(--spacing-lg);
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: background 0.15s;
+            min-height: 72px;
+        }
+        .transaction-header:hover {
+            background: var(--gray-50);
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex: 1;
+            min-width: 0;
+        }
+        .transaction-checkbox-wrapper {
+            flex-shrink: 0;
+        }
+        .transaction-checkbox-wrapper input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-orange);
+            cursor: pointer;
+        }
+        .transaction-info {
+            min-width: 0;
+        }
+        .transaction-merchant {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .transaction-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .transaction-center {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            flex-shrink: 0;
+        }
+        .flag-brasil-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--badge-flag-bg);
+            color: var(--badge-flag-text);
+            white-space: nowrap;
+        }
+
+        .transaction-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            flex-shrink: 0;
+        }
+        .transaction-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gray-900);
+            white-space: nowrap;
+        }
+        .recommendation-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .recommendation-badge.approved {
+            background: var(--success-green-light);
+            color: var(--green-800);
+        }
+        .recommendation-badge.review {
+            background: var(--warning-yellow-light);
+            color: var(--amber-900);
+        }
+        .recommendation-badge.rejected {
+            background: var(--danger-red-light);
+            color: var(--badge-flag-text);
+        }
+
+        .confidence-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 48px;
+        }
+        .confidence-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+        .confidence-bar {
+            width: 48px;
+            height: 4px;
+            background: var(--gray-200);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.6s ease;
+        }
+        .confidence-fill.high { background: var(--success-green); }
+        .confidence-fill.medium { background: var(--warning-yellow); }
+        .confidence-fill.low { background: var(--danger-red); }
+
+        .expand-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-lg);
+            background: transparent;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            color: var(--gray-500);
+        }
+        .expand-btn:hover {
+            background: var(--gray-100);
+            border-color: var(--gray-300);
+        }
+        .expand-btn svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s;
+        }
+        .expand-btn[aria-expanded="true"] svg {
+            transform: rotate(180deg);
+        }
+
+        /* ─── Reasoning Section ─── */
+        .transaction-reasoning {
+            border-top: 1px solid var(--border);
+            background: var(--gray-50);
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .transaction-reasoning[hidden] {
+            display: none;
+        }
+        .reasoning-content {
+            padding: var(--spacing-lg);
+        }
+        .reasoning-content h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+        .reasoning-text {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+        .reasoning-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .reasoning-rule,
+        .reasoning-data,
+        .reasoning-confidence {
+            font-size: 12px;
+            color: var(--gray-600);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--white);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        .reasoning-rule strong,
+        .reasoning-data strong,
+        .reasoning-confidence strong {
+            color: var(--gray-800);
+        }
+
+        .transaction-actions {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: flex-end;
+        }
+
+        /* ─── Buttons ─── */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-family: inherit;
+            min-height: 44px;
+        }
+        .btn-primary {
+            background: var(--primary-orange);
+            color: var(--white);
+        }
+        .btn-primary:hover {
+            background: var(--primary-orange-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-primary:disabled {
+            background: var(--gray-300);
+            color: var(--gray-500);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .btn-secondary {
+            background: var(--white);
+            color: var(--gray-700);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--gray-50);
+        }
+        .btn-approve {
+            background: var(--success-green);
+            color: var(--white);
+        }
+        .btn-approve:hover {
+            background: var(--green-800);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-reject {
+            background: var(--white);
+            color: var(--danger-red);
+            border: 1px solid var(--danger-red);
+        }
+        .btn-reject:hover {
+            background: var(--danger-red-light);
+        }
+        .btn-danger {
+            background: var(--danger-red);
+            color: var(--white);
+        }
+        .btn-danger:hover {
+            background: var(--red-700);
+        }
+
+        /* ─── Override Bar ─── */
+        .override-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+        }
+        .override-overlay.active {
+            display: block;
+        }
+        .override-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 2px solid var(--warning-yellow);
+            box-shadow: var(--shadow-xl);
+            z-index: 101;
+            animation: slideUp 0.3s ease forwards;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .override-bar.active {
+            display: block;
+        }
+        .override-bar-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-xl);
+        }
+        .override-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        .override-header strong {
+            font-size: 16px;
+            color: var(--gray-900);
+        }
+        .override-header span {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+        .override-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+        .override-option {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xl);
+            background: var(--white);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-family: inherit;
+            min-height: 44px;
+            width: 100%;
+        }
+        .override-option:hover {
+            border-color: var(--gray-300);
+            background: var(--gray-50);
+        }
+        .override-option[aria-checked="true"] {
+            border-color: var(--primary-orange);
+            background: var(--primary-orange-light);
+        }
+        .override-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gray-200);
+            color: var(--gray-600);
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .override-option[aria-checked="true"] .override-number {
+            background: var(--primary-orange);
+            color: var(--white);
+        }
+        .override-option div strong {
+            font-size: 14px;
+            color: var(--gray-900);
+            display: block;
+        }
+        .override-option div span {
+            font-size: 12px;
+            color: var(--gray-500);
+            display: block;
+            margin-top: 2px;
+        }
+        .override-footer {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--info-blue-light);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+        .override-hint-text {
+            font-size: 12px;
+            color: var(--blue-700);
+        }
+        .override-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+
+        /* ─── Confirmation Modal ─── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            max-width: 480px;
+            width: 90%;
+            padding: var(--spacing-xl);
+            animation: fadeIn 0.2s ease;
+        }
+        .modal h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+        .modal p {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.6;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+
+        /* ─── Sidebar ─── */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+            position: sticky;
+            top: 100px;
+            align-self: start;
+        }
+        .sidebar-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        .sidebar-card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-md);
+        }
+        .sidebar-flag-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .sidebar-flag-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .sidebar-flag-item span:first-child {
+            color: var(--gray-600);
+        }
+        .sidebar-flag-item span:last-child {
+            font-weight: 700;
+            color: var(--gray-900);
+            background: var(--gray-100);
+            padding: 2px var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+        }
+        .sidebar-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-orange);
+            text-decoration: none;
+            margin-top: var(--spacing-sm);
+            min-height: 44px;
+        }
+        .sidebar-link:hover {
+            color: var(--primary-orange-dark);
+        }
+        .sidebar-suggestion-count {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-xs);
+        }
+        .sidebar-suggestion-label {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        .sidebar-summary {
+            font-size: 13px;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+        .sidebar-summary strong {
+            color: var(--gray-900);
+        }
+
+        /* ─── Footer ─── */
+        .review-footer {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+        .review-footer-info {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+        .review-footer-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        .btn-export {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--gray-700);
+            font-family: inherit;
+            transition: all 0.2s;
+            min-height: 44px;
+        }
+        .btn-export:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        /* ─── Toast ─── */
+        .toast-container {
+            position: fixed;
+            bottom: var(--spacing-xl);
+            right: var(--spacing-xl);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        .toast {
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-xl);
+            animation: toastIn 0.3s ease forwards;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            max-width: 420px;
+        }
+        .toast.removing {
+            animation: toastOut 0.3s ease forwards;
+        }
+        .toast.success {
+            background: var(--green-800);
+            color: var(--white);
+        }
+        .toast.error {
+            background: var(--danger-red);
+            color: var(--white);
+        }
+        .toast.info {
+            background: var(--blue-700);
+            color: var(--white);
+        }
+
+        /* ─── Decision badge on resolved transactions ─── */
+        .decided-badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .decided-badge.decided-approved {
+            background: var(--success-green-light);
+            color: var(--green-800);
+        }
+        .decided-badge.decided-rejected {
+            background: var(--danger-red-light);
+            color: var(--badge-flag-text);
+        }
+        .decided-badge.decided-override {
+            background: var(--warning-yellow-light);
+            color: var(--amber-900);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 1280px) {
+            .review-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .transaction-right {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group {
+                flex-wrap: wrap;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-md);
+            }
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+            }
+            .header-center {
+                display: none;
+            }
+            .transaction-header {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+                padding: var(--spacing-md);
+            }
+            .transaction-left {
+                width: 100%;
+            }
+            .transaction-center {
+                width: 100%;
+            }
+            .transaction-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .override-bar-inner {
+                padding: var(--spacing-md);
+            }
+            .page-title {
+                font-size: 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-pills {
+                flex-wrap: wrap;
+            }
+            .recommendation-badge {
+                font-size: 10px;
+            }
+            .transaction-amount {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── Header ─── -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="index-v5-config.html" class="logo" aria-label="Payfy Revisão de Gastos">
+                    <div class="logo-icon">P</div>
+                    <span>Payfy</span>
+                </a>
+                <span style="font-size: 14px; color: var(--gray-400);">|</span>
+                <span style="font-size: 14px; font-weight: 600; color: var(--gray-700);">Revisão de Gastos</span>
+            </div>
+            <div class="header-center">
+                <strong>Policy Agent</strong>
+                <span style="color: var(--gray-400);">|</span>
+                <span>Recomendações dos últimos 90 dias</span>
+            </div>
+            <div class="header-right">
+                <a href="index-v5-config.html" aria-label="Voltar para Configuração">
+                    <span aria-hidden="true">&larr;</span> Voltar para Configuração
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- ─── Page Title ─── -->
+        <div class="page-title-row">
+            <div>
+                <h1 class="page-title">Dashboard de Revisão</h1>
+                <p class="page-subtitle">Revise e aprove transações analisadas pelo Policy Agent</p>
+            </div>
+        </div>
+
+        <!-- ─── KPI Grid ─── -->
+        <section class="kpi-grid" aria-label="Métricas de revisão">
+            <div class="kpi-card" style="--kpi-accent: var(--success-green); --kpi-gradient-start: var(--success-green-light); --kpi-gradient-end: #A7F3D0; --kpi-label-color: var(--green-800);">
+                <div class="kpi-card-header">
+                    <div class="kpi-card-header-label">Aprovação Recomendada</div>
+                </div>
+                <div class="kpi-card-body">
+                    <div class="kpi-value">523</div>
+                    <div class="kpi-label">transações</div>
+                </div>
+            </div>
+            <div class="kpi-card" style="--kpi-accent: var(--warning-yellow); --kpi-gradient-start: var(--warning-yellow-light); --kpi-gradient-end: var(--yellow-300); --kpi-label-color: var(--amber-900);">
+                <div class="kpi-card-header">
+                    <div class="kpi-card-header-label">Revisão Necessária</div>
+                </div>
+                <div class="kpi-card-body">
+                    <div class="kpi-value">89</div>
+                    <div class="kpi-label">transações</div>
+                </div>
+            </div>
+            <div class="kpi-card" style="--kpi-accent: var(--danger-red); --kpi-gradient-start: var(--danger-red-light); --kpi-gradient-end: #FECACA; --kpi-label-color: var(--badge-flag-text);">
+                <div class="kpi-card-header">
+                    <div class="kpi-card-header-label">Rejeição Recomendada</div>
+                </div>
+                <div class="kpi-card-body">
+                    <div class="kpi-value">12</div>
+                    <div class="kpi-label">transações</div>
+                </div>
+            </div>
+            <div class="kpi-card" style="--kpi-accent: var(--info-blue); --kpi-gradient-start: var(--info-blue-light); --kpi-gradient-end: var(--blue-200); --kpi-label-color: var(--blue-700);">
+                <div class="kpi-card-header">
+                    <div class="kpi-card-header-label">Acurácia IA</div>
+                </div>
+                <div class="kpi-card-body">
+                    <div class="kpi-value">99.1%</div>
+                    <div class="kpi-label">concordância revisor</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── Filter Bar ─── -->
+        <div class="filter-bar" role="search" aria-label="Filtros de transações">
+            <div class="filter-group">
+                <span class="filter-group-label">Tipo</span>
+                <div class="filter-pills" role="group" aria-label="Filtro por tipo">
+                    <button class="filter-pill active" data-filter-type="type" data-value="all" onclick="setFilter(this, 'type')">Todos</button>
+                    <button class="filter-pill" data-filter-type="type" data-value="approved" onclick="setFilter(this, 'type')">Aprovação</button>
+                    <button class="filter-pill" data-filter-type="type" data-value="review" onclick="setFilter(this, 'type')">Revisão</button>
+                    <button class="filter-pill" data-filter-type="type" data-value="rejected" onclick="setFilter(this, 'type')">Rejeição</button>
+                </div>
+            </div>
+            <div class="filter-group">
+                <span class="filter-group-label">Período</span>
+                <div class="filter-pills" role="group" aria-label="Filtro por período">
+                    <button class="filter-pill" data-filter-type="period" data-value="today" onclick="setFilter(this, 'period')">Hoje</button>
+                    <button class="filter-pill" data-filter-type="period" data-value="7d" onclick="setFilter(this, 'period')">7 dias</button>
+                    <button class="filter-pill" data-filter-type="period" data-value="30d" onclick="setFilter(this, 'period')">30 dias</button>
+                    <button class="filter-pill active" data-filter-type="period" data-value="90d" onclick="setFilter(this, 'period')">90 dias</button>
+                </div>
+            </div>
+            <div class="filter-search">
+                <span class="filter-search-icon" aria-hidden="true">&#128269;</span>
+                <input type="search" placeholder="Buscar transação ou merchant..." aria-label="Buscar transação ou merchant" oninput="filterBySearch(this.value)">
+            </div>
+            <div class="filter-meta" aria-live="polite">
+                <span class="filter-count" id="filterCount">2 filtros aplicados</span>
+                <button class="filter-clear" onclick="clearFilters()">Limpar filtros</button>
+            </div>
+        </div>
+
+        <!-- ─── Main Layout ─── -->
+        <div class="review-layout">
+            <!-- ─── Transaction List ─── -->
+            <section class="transaction-list" aria-label="Lista de transações">
+
+                <!-- Transaction 1 -->
+                <article class="transaction-card" style="--card-color: var(--success-green);" data-type="approved" data-merchant="uber corrida centro" data-employee="ana silva" id="tx-1">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Uber" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Uber — Corrida centro</h3>
+                                <div class="transaction-meta">Ana Silva · Comercial · 24/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 42</span>
+                            <span class="recommendation-badge approved">Aprovação</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">98%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 98%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">A transação de R$ 42 com Uber está dentro do limite de R$ 100 para auto-aprovação de transporte urbano. Recibo validado, CNPJ ativo, valor consistente com histórico do funcionário (média R$ 38 nos últimos 30 dias).</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Auto-aprovar transporte até R$ 100</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 42), Categoria (Transporte), Merchant (Uber), Histórico (média R$ 38/mês), CNPJ (ativo), Recibo (válido)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 98% — Alta certeza, todos os critérios atendidos</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 2 -->
+                <article class="transaction-card" style="--card-color: var(--success-green);" data-type="approved" data-merchant="aws services" data-employee="pedro santos" id="tx-2">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação AWS" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">AWS Services</h3>
+                                <div class="transaction-meta">Pedro Santos · Engenharia · 24/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 1.850</span>
+                            <span class="recommendation-badge approved">Aprovação</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">95%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 95%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Transação de R$ 1.850 com AWS está dentro do limite de R$ 2.000 para SaaS/infraestrutura. CNPJ da AWS Brasil válido, recorrência mensal confirmada (últimos 6 meses), departamento de Engenharia autorizado.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> SaaS até R$ 2.000</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 1.850), Categoria (SaaS), Merchant (AWS), Recorrência (mensal), Departamento (Engenharia)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 95% — Alta certeza, padrão recorrente identificado</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 3 -->
+                <article class="transaction-card" style="--card-color: var(--warning-yellow);" data-type="review" data-merchant="restaurante fasano" data-employee="carlos lima" id="tx-3">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Fasano" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Restaurante Fasano</h3>
+                                <div class="transaction-meta">Carlos Lima · Diretoria · 23/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 320</span>
+                            <span class="recommendation-badge review">Revisão</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">72%</span>
+                                <div class="confidence-bar"><div class="confidence-fill medium" style="width: 72%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Transação de R$ 320 no Restaurante Fasano excede o per diem de R$ 250 para refeições. Embora o funcionário seja da Diretoria (limite flexível), o valor está 28% acima do teto. Recomenda-se revisão para confirmar se há justificativa de negócio.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Per diem excedido (R$ 320 vs limite R$ 250)</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 320), Categoria (Alimentação), Limite per diem (R$ 250), Departamento (Diretoria), NF-e (válida)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 72% — Confiança média, exceção possível para Diretoria</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 4 -->
+                <article class="transaction-card" style="--card-color: var(--danger-red);" data-type="rejected" data-merchant="gift card ifood" data-employee="mariana costa" id="tx-4">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Gift card" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Gift card iFood</h3>
+                                <div class="transaction-meta">Mariana Costa · Marketing · 23/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 200</span>
+                            <span class="recommendation-badge rejected">Rejeição</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">99%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 99%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Gift cards são explicitamente proibidos pela política corporativa (Regra 4.2.1). A transação de R$ 200 com iFood se enquadra como gift card/vale-presente. Nenhuma exceção prevista para esta categoria.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Gift card proibido pela política</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 200), Categoria (Gift card), Merchant (iFood), Política (proibição explícita)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 99% — Alta certeza, regra explícita sem exceções</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 5 -->
+                <article class="transaction-card" style="--card-color: var(--success-green);" data-type="approved" data-merchant="hotel ibis sp" data-employee="joão pereira" id="tx-5">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Hotel Ibis" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Hotel Ibis SP — 3 noites</h3>
+                                <div class="transaction-meta">João Pereira · Vendas · 22/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 1.500</span>
+                            <span class="recommendation-badge approved">Aprovação</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">96%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 96%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Hospedagem de 3 noites no Hotel Ibis SP a R$ 500/noite está dentro do limite. Reserva vinculada a viagem aprovada (GRU-CGH), NF-e válida, CNPJ do hotel ativo na Receita Federal.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Hospedagem até R$ 500/noite</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor total (R$ 1.500), Diárias (3), Valor/noite (R$ 500), Limite (R$ 500/noite), Viagem aprovada, CNPJ (ativo)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 96% — Alta certeza, todos os critérios atendidos</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 6 -->
+                <article class="transaction-card" style="--card-color: var(--warning-yellow);" data-type="review" data-merchant="uber eats sábado" data-employee="fernanda dias" id="tx-6">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Uber Eats" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Uber Eats — Sábado</h3>
+                                <div class="transaction-meta">Fernanda Dias · CS · 22/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center">
+                            <span class="flag-brasil-badge">FIM DE SEMANA</span>
+                        </div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 85</span>
+                            <span class="recommendation-badge review">Revisão</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">65%</span>
+                                <div class="confidence-bar"><div class="confidence-fill medium" style="width: 65%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Transação de R$ 85 realizada em um sábado. O valor está dentro do limite para alimentação, porém gastos em fins de semana requerem justificativa conforme política. Departamento CS pode ter plantão, mas não há registro de escala.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Gasto fim de semana requer justificativa</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 85), Dia (sábado), Categoria (Alimentação), Departamento (CS), Escala (não encontrada)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 65% — Confiança média, necessita confirmação de plantão</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 7 -->
+                <article class="transaction-card" style="--card-color: var(--success-green);" data-type="approved" data-merchant="magazine luiza" data-employee="roberto alves" id="tx-7">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Magazine Luiza" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Magazine Luiza</h3>
+                                <div class="transaction-meta">Roberto Alves · Operações · 21/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 890</span>
+                            <span class="recommendation-badge approved">Aprovação</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">97%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 97%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Compra de R$ 890 na Magazine Luiza está dentro do limite de R$ 1.000 para material de escritório. NF-e válida, CNPJ ativo, categoria identificada como material de escritório pelo descritor do cartão.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Material escritório até R$ 1.000</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 890), Categoria (Material escritório), Merchant (Magazine Luiza), Limite (R$ 1.000), NF-e (válida)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 97% — Alta certeza, valor dentro do limite</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 8 -->
+                <article class="transaction-card" style="--card-color: var(--warning-yellow);" data-type="review" data-merchant="voo gru-gig" data-employee="ana silva" id="tx-8">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Voo GRU-GIG" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Voo GRU-GIG — 1 dia antes</h3>
+                                <div class="transaction-meta">Ana Silva · Comercial · 21/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 2.100</span>
+                            <span class="recommendation-badge review">Revisão</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">58%</span>
+                                <div class="confidence-bar"><div class="confidence-fill low" style="width: 58%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Voo GRU-GIG de R$ 2.100 apresenta dois alertas: (1) reserva feita com menos de 7 dias de antecedência, o que viola a política de compra antecipada; (2) valor acima do teto de R$ 2.000 para voos domésticos. Combinação de fatores reduz a confiança.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Reserva &lt; 7 dias + acima de R$ 2.000</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 2.100), Antecedência (1 dia), Limite voo (R$ 2.000), Rota (GRU-GIG), Funcionária (Ana Silva), Departamento (Comercial)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 58% — Confiança baixa, múltiplas violações</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 9 -->
+                <article class="transaction-card" style="--card-color: var(--success-green);" data-type="approved" data-merchant="posto shell combustível" data-employee="lucas mendes" id="tx-9">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Posto Shell" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Posto Shell — Combustível</h3>
+                                <div class="transaction-meta">Lucas Mendes · Logística · 20/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 180</span>
+                            <span class="recommendation-badge approved">Aprovação</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">94%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 94%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Abastecimento de R$ 180 no Posto Shell está dentro do limite de R$ 200 para combustível. Funcionário do departamento de Logística tem histórico regular de abastecimento. CNPJ do posto ativo, NF-e válida.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Combustível até R$ 200</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 180), Categoria (Combustível), Merchant (Shell), Limite (R$ 200), Departamento (Logística), CNPJ (ativo)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 94% — Alta certeza, padrão regular</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 10 -->
+                <article class="transaction-card" style="--card-color: var(--warning-yellow);" data-type="review" data-merchant="farmácia drogasil" data-employee="patrícia rocha" id="tx-10">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação Farmácia Drogasil" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Farmácia Drogasil</h3>
+                                <div class="transaction-meta">Patrícia Rocha · RH · 20/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center">
+                            <span class="flag-brasil-badge">SEM NF-e</span>
+                        </div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 45</span>
+                            <span class="recommendation-badge review">Revisão</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">51%</span>
+                                <div class="confidence-bar"><div class="confidence-fill low" style="width: 51%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Transação de R$ 45 na Farmácia Drogasil: categoria "Farmácia" não está mapeada na política de gastos. Sem NF-e anexada. O Agent não consegue determinar se é gasto pessoal ou corporativo. Recomenda-se revisão manual.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Categoria não reconhecida</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 45), Categoria (Farmácia — não mapeada), NF-e (ausente), Departamento (RH)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 51% — Confiança baixa, dados insuficientes</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 11 -->
+                <article class="transaction-card" style="--card-color: var(--success-green);" data-type="approved" data-merchant="99 corrida aeroporto" data-employee="pedro santos" id="tx-11">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação 99" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">99 — Corrida aeroporto</h3>
+                                <div class="transaction-meta">Pedro Santos · Engenharia · 19/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center"></div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 67</span>
+                            <span class="recommendation-badge approved">Aprovação</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">96%</span>
+                                <div class="confidence-bar"><div class="confidence-fill high" style="width: 96%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Corrida de R$ 67 com a 99 para o aeroporto está dentro do limite de R$ 100 para transporte. Funcionário tem viagem aprovada no período, o que justifica o trajeto ao aeroporto. Recibo válido.</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Transporte até R$ 100</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor (R$ 67), Categoria (Transporte), Merchant (99), Limite (R$ 100), Viagem (aprovada), Recibo (válido)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 96% — Alta certeza, contexto de viagem confirmado</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Transaction 12 -->
+                <article class="transaction-card" style="--card-color: var(--warning-yellow);" data-type="review" data-merchant="restaurante la casserole" data-employee="carlos lima" id="tx-12">
+                    <div class="transaction-header" onclick="toggleReasoning(this)">
+                        <div class="transaction-left">
+                            <div class="transaction-checkbox-wrapper">
+                                <input type="checkbox" aria-label="Selecionar transação La Casserole" onclick="event.stopPropagation()">
+                            </div>
+                            <div class="transaction-info">
+                                <h3 class="transaction-merchant">Restaurante La Casserole</h3>
+                                <div class="transaction-meta">Carlos Lima · Diretoria · 19/03/2026</div>
+                            </div>
+                        </div>
+                        <div class="transaction-center">
+                            <span class="flag-brasil-badge" style="background: var(--badge-confidential-bg); color: var(--badge-confidential-text);">ÁLCOOL DETECTADO</span>
+                        </div>
+                        <div class="transaction-right">
+                            <span class="transaction-amount">R$ 450</span>
+                            <span class="recommendation-badge review">Revisão</span>
+                            <div class="confidence-indicator">
+                                <span class="confidence-value">43%</span>
+                                <div class="confidence-bar"><div class="confidence-fill low" style="width: 43%;"></div></div>
+                            </div>
+                        </div>
+                        <button class="expand-btn" aria-expanded="false" aria-label="Expandir raciocínio" onclick="event.stopPropagation(); toggleReasoning(this.closest('.transaction-header'))">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                    </div>
+                    <div class="transaction-reasoning" hidden>
+                        <div class="reasoning-content">
+                            <h4>Raciocínio do Agent</h4>
+                            <p class="reasoning-text">Transação de R$ 450 no Restaurante La Casserole apresenta múltiplos alertas: (1) Per diem excedido (R$ 450 vs limite R$ 250); (2) Álcool detectado na NF-e (R$ 180 em vinhos). A política permite reembolso de alimentação, mas exclui bebidas alcoólicas. Recomenda-se rejeição parcial ou aprovação apenas do valor sem álcool (R$ 270).</p>
+                            <div class="reasoning-details">
+                                <div class="reasoning-rule"><strong>Regra aplicada:</strong> Per diem excedido + álcool detectado</div>
+                                <div class="reasoning-data"><strong>Dados considerados:</strong> Valor total (R$ 450), Alimentação (R$ 270), Álcool (R$ 180), Per diem (R$ 250), NF-e (válida, itens discriminados), CNPJ (ativo)</div>
+                                <div class="reasoning-confidence"><strong>Confiança:</strong> 43% — Confiança baixa, múltiplas violações + necessidade de decisão parcial</div>
+                            </div>
+                        </div>
+                        <div class="transaction-actions">
+                            <button class="btn btn-approve" onclick="approveTransaction(this, event)">&#10003; Aprovar</button>
+                            <button class="btn btn-reject" onclick="rejectTransaction(this, event)">&#10007; Rejeitar</button>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- ─── Sidebar ─── -->
+            <aside class="sidebar" aria-label="Informações complementares">
+                <div class="sidebar-card">
+                    <h3>Flags Brasil Ativas</h3>
+                    <div class="sidebar-flag-list">
+                        <div class="sidebar-flag-item">
+                            <span>NF-e ausente</span>
+                            <span>3</span>
+                        </div>
+                        <div class="sidebar-flag-item">
+                            <span>CNPJ inativo</span>
+                            <span>1</span>
+                        </div>
+                        <div class="sidebar-flag-item">
+                            <span>Fim de semana</span>
+                            <span>5</span>
+                        </div>
+                        <div class="sidebar-flag-item">
+                            <span>Álcool detectado</span>
+                            <span>2</span>
+                        </div>
+                        <div class="sidebar-flag-item">
+                            <span>Gift card</span>
+                            <span>1</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-card">
+                    <h3>Sugestões do Agent</h3>
+                    <div class="sidebar-suggestion-count">3</div>
+                    <div class="sidebar-suggestion-label">sugestões pendentes</div>
+                    <a href="index-v5-config.html" class="sidebar-link">Ver sugestões &rarr;</a>
+                </div>
+                <div class="sidebar-card">
+                    <h3>Resumo do Período</h3>
+                    <div class="sidebar-summary">
+                        <strong>624</strong> transações<br>
+                        <strong>523</strong> aprovadas<br>
+                        <strong>89</strong> em revisão<br>
+                        <strong>12</strong> rejeitadas
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- ─── Footer ─── -->
+        <footer class="review-footer">
+            <div class="review-footer-info">Mostrando 12 de 624 transações</div>
+            <div class="review-footer-actions">
+                <button class="btn-export" onclick="showToast('Exportando CSV...', 'info')">Exportar CSV</button>
+                <button class="btn-export" onclick="showToast('Exportando PDF...', 'info')">Exportar PDF</button>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ─── Override Overlay ─── -->
+    <div class="override-overlay" id="overrideOverlay" onclick="cancelOverride()"></div>
+
+    <!-- ─── Override Bar ─── -->
+    <div class="override-bar" id="overrideBar" role="dialog" aria-label="Motivo do override" aria-modal="true">
+        <div class="override-bar-inner">
+            <div class="override-header">
+                <span aria-hidden="true">&#9888;&#65039;</span>
+                <strong>Você discorda da recomendação do Agent.</strong>
+                <span>Selecione o motivo (obrigatório):</span>
+            </div>
+            <div class="override-options" role="radiogroup" aria-label="Motivo do override">
+                <button role="radio" aria-checked="false" class="override-option" onclick="selectOverride(this, 1)" data-motivo="Conceder exceção">
+                    <span class="override-number">1</span>
+                    <div>
+                        <strong>Conceder exceção</strong>
+                        <span>Transação viola política, mas estou aprovando como exceção</span>
+                    </div>
+                </button>
+                <button role="radio" aria-checked="false" class="override-option" onclick="selectOverride(this, 2)" data-motivo="Política precisa atualizar">
+                    <span class="override-number">2</span>
+                    <div>
+                        <strong>Política precisa atualizar</strong>
+                        <span>A regra está desatualizada ou tem um gap</span>
+                    </div>
+                </button>
+                <button role="radio" aria-checked="false" class="override-option" onclick="selectOverride(this, 3)" data-motivo="Avaliação incorreta do Agent">
+                    <span class="override-number">3</span>
+                    <div>
+                        <strong>Avaliação incorreta do Agent</strong>
+                        <span>O Agent interpretou a transação de forma errada</span>
+                    </div>
+                </button>
+                <button role="radio" aria-checked="false" class="override-option" onclick="selectOverride(this, 4)" data-motivo="Política não se aplica aqui">
+                    <span class="override-number">4</span>
+                    <div>
+                        <strong>Política não se aplica aqui</strong>
+                        <span>A regra existe mas este caso é uma exceção legítima</span>
+                    </div>
+                </button>
+            </div>
+            <div class="override-footer">
+                <span aria-hidden="true">&#128161;</span>
+                <span class="override-hint-text">Seu feedback melhora o Agent automaticamente. Motivos de override alimentam as sugestões de melhoria.</span>
+            </div>
+            <div class="override-actions">
+                <button class="btn btn-secondary" onclick="cancelOverride()">Cancelar</button>
+                <button class="btn btn-primary" id="confirmOverrideBtn" onclick="confirmOverride()" disabled>Confirmar Override</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Confirmation Modal ─── -->
+    <div class="modal-overlay" id="rejectModal" role="presentation" onclick="closeRejectModal(event)">
+        <div class="modal" role="dialog" aria-labelledby="reject-modal-title" aria-modal="true" onclick="event.stopPropagation()">
+            <h2 id="reject-modal-title">Confirmar Rejeição</h2>
+            <p id="reject-modal-text">Tem certeza que deseja rejeitar esta transação? O Agent recomendou aprovação.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeRejectModalAction()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmReject()">Rejeitar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── Toast Container ─── -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <script>
+        /* ─── State ─── */
+        var currentOverrideCard = null;
+        var currentOverrideAction = null;
+        var selectedOverrideMotivo = null;
+        var currentRejectCard = null;
+        var activeFilters = { type: 'all', period: '90d', search: '' };
+
+        /* ─── Toggle Reasoning ─── */
+        function toggleReasoning(headerEl) {
+            var card = headerEl.closest('.transaction-card');
+            if (card.classList.contains('decided')) return;
+            var reasoning = card.querySelector('.transaction-reasoning');
+            var expandBtn = card.querySelector('.expand-btn');
+            var isHidden = reasoning.hasAttribute('hidden');
+            if (isHidden) {
+                reasoning.removeAttribute('hidden');
+                expandBtn.setAttribute('aria-expanded', 'true');
+            } else {
+                reasoning.setAttribute('hidden', '');
+                expandBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        /* ─── Approve Transaction ─── */
+        function approveTransaction(btn, event) {
+            event.stopPropagation();
+            var card = btn.closest('.transaction-card');
+            var cardType = card.getAttribute('data-type');
+
+            /* If Agent recommended review or rejection, this is an override */
+            if (cardType === 'review' || cardType === 'rejected') {
+                currentOverrideCard = card;
+                currentOverrideAction = 'approve';
+                openOverrideBar();
+            } else {
+                /* Agent recommended approval — straight approve */
+                markAsDecided(card, 'approved', 'Aprovado');
+                showToast('Transação aprovada com sucesso.', 'success');
+            }
+        }
+
+        /* ─── Reject Transaction ─── */
+        function rejectTransaction(btn, event) {
+            event.stopPropagation();
+            var card = btn.closest('.transaction-card');
+            var cardType = card.getAttribute('data-type');
+
+            /* If Agent recommended approval, show confirmation modal */
+            if (cardType === 'approved') {
+                currentRejectCard = card;
+                var confidence = card.querySelector('.confidence-value').textContent;
+                document.getElementById('reject-modal-text').textContent =
+                    'Tem certeza que deseja rejeitar esta transação? O Agent recomendou aprovação com ' + confidence + ' de confiança.';
+                document.getElementById('rejectModal').classList.add('active');
+                document.querySelector('#rejectModal .btn-danger').focus();
+            } else {
+                /* Agent recommended review or rejection — straight reject */
+                markAsDecided(card, 'rejected', 'Rejeitado');
+                showToast('Transação rejeitada.', 'success');
+            }
+        }
+
+        /* ─── Mark as Decided ─── */
+        function markAsDecided(card, decision, label) {
+            card.classList.add('decided');
+            var reasoning = card.querySelector('.transaction-reasoning');
+            reasoning.setAttribute('hidden', '');
+            var expandBtn = card.querySelector('.expand-btn');
+            expandBtn.setAttribute('aria-expanded', 'false');
+
+            /* Replace recommendation badge */
+            var badge = card.querySelector('.recommendation-badge');
+            if (badge) {
+                badge.className = 'decided-badge';
+                if (decision === 'approved') {
+                    badge.classList.add('decided-approved');
+                    badge.textContent = label;
+                } else if (decision === 'rejected') {
+                    badge.classList.add('decided-rejected');
+                    badge.textContent = label;
+                } else if (decision === 'override') {
+                    badge.classList.add('decided-override');
+                    badge.textContent = label;
+                }
+            }
+
+            /* Remove action buttons */
+            var actions = card.querySelector('.transaction-actions');
+            if (actions) actions.remove();
+        }
+
+        /* ─── Override Bar ─── */
+        function openOverrideBar() {
+            selectedOverrideMotivo = null;
+            document.getElementById('confirmOverrideBtn').disabled = true;
+            var options = document.querySelectorAll('.override-option');
+            options.forEach(function(opt) {
+                opt.setAttribute('aria-checked', 'false');
+            });
+            document.getElementById('overrideOverlay').classList.add('active');
+            document.getElementById('overrideBar').classList.add('active');
+            /* Focus first option */
+            setTimeout(function() {
+                options[0].focus();
+            }, 100);
+            /* Trap focus */
+            document.addEventListener('keydown', overrideKeyHandler);
+        }
+
+        function cancelOverride() {
+            document.getElementById('overrideOverlay').classList.remove('active');
+            document.getElementById('overrideBar').classList.remove('active');
+            document.removeEventListener('keydown', overrideKeyHandler);
+            currentOverrideCard = null;
+            currentOverrideAction = null;
+            selectedOverrideMotivo = null;
+        }
+
+        function selectOverride(btn, number) {
+            var options = document.querySelectorAll('.override-option');
+            options.forEach(function(opt) {
+                opt.setAttribute('aria-checked', 'false');
+            });
+            btn.setAttribute('aria-checked', 'true');
+            selectedOverrideMotivo = btn.getAttribute('data-motivo');
+            document.getElementById('confirmOverrideBtn').disabled = false;
+        }
+
+        function confirmOverride() {
+            if (!selectedOverrideMotivo || !currentOverrideCard) return;
+            var card = currentOverrideCard;
+            card.classList.add('override-applied');
+            markAsDecided(card, 'override', 'Override: ' + selectedOverrideMotivo);
+            showToast('Override registrado: ' + selectedOverrideMotivo + '. Feedback enviado ao Agent.', 'info');
+            cancelOverride();
+        }
+
+        function overrideKeyHandler(e) {
+            if (e.key === 'Escape') {
+                cancelOverride();
+                return;
+            }
+            /* Arrow key navigation in radio group */
+            var options = Array.from(document.querySelectorAll('.override-option'));
+            var focused = document.activeElement;
+            var idx = options.indexOf(focused);
+            if (idx === -1) return;
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                var next = (idx + 1) % options.length;
+                options[next].focus();
+                options[next].click();
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                var prev = (idx - 1 + options.length) % options.length;
+                options[prev].focus();
+                options[prev].click();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!document.getElementById('confirmOverrideBtn').disabled) {
+                    confirmOverride();
+                }
+            }
+            /* Focus trap */
+            if (e.key === 'Tab') {
+                var bar = document.getElementById('overrideBar');
+                var focusable = bar.querySelectorAll('button:not([disabled])');
+                var first = focusable[0];
+                var last = focusable[focusable.length - 1];
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+            }
+        }
+
+        /* ─── Reject Modal ─── */
+        function closeRejectModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            closeRejectModalAction();
+        }
+
+        function closeRejectModalAction() {
+            document.getElementById('rejectModal').classList.remove('active');
+            currentRejectCard = null;
+        }
+
+        function confirmReject() {
+            if (!currentRejectCard) return;
+            /* Rejecting an Agent-approved transaction is also a kind of override */
+            currentOverrideCard = currentRejectCard;
+            currentOverrideAction = 'reject';
+            closeRejectModalAction();
+            markAsDecided(currentOverrideCard, 'rejected', 'Rejeitado (override)');
+            showToast('Transação rejeitada. Override registrado.', 'success');
+            currentOverrideCard = null;
+        }
+
+        /* ─── Filters ─── */
+        function setFilter(btn, filterType) {
+            var group = btn.closest('.filter-pills');
+            group.querySelectorAll('.filter-pill').forEach(function(p) {
+                p.classList.remove('active');
+            });
+            btn.classList.add('active');
+            activeFilters[filterType] = btn.getAttribute('data-value');
+            applyFilters();
+            updateFilterCount();
+        }
+
+        function filterBySearch(value) {
+            activeFilters.search = value.toLowerCase();
+            applyFilters();
+        }
+
+        function clearFilters() {
+            activeFilters = { type: 'all', period: '90d', search: '' };
+            /* Reset type pills */
+            document.querySelectorAll('[data-filter-type="type"]').forEach(function(p) {
+                p.classList.remove('active');
+            });
+            document.querySelector('[data-filter-type="type"][data-value="all"]').classList.add('active');
+            /* Reset period pills */
+            document.querySelectorAll('[data-filter-type="period"]').forEach(function(p) {
+                p.classList.remove('active');
+            });
+            document.querySelector('[data-filter-type="period"][data-value="90d"]').classList.add('active');
+            /* Reset search */
+            document.querySelector('.filter-search input').value = '';
+            applyFilters();
+            updateFilterCount();
+            showToast('Filtros limpos.', 'info');
+        }
+
+        function applyFilters() {
+            var cards = document.querySelectorAll('.transaction-card');
+            cards.forEach(function(card) {
+                var show = true;
+                /* Type filter */
+                if (activeFilters.type !== 'all') {
+                    if (card.getAttribute('data-type') !== activeFilters.type) {
+                        show = false;
+                    }
+                }
+                /* Search filter */
+                if (activeFilters.search) {
+                    var merchant = card.getAttribute('data-merchant') || '';
+                    var employee = card.getAttribute('data-employee') || '';
+                    var searchText = merchant + ' ' + employee;
+                    if (searchText.indexOf(activeFilters.search) === -1) {
+                        show = false;
+                    }
+                }
+                card.style.display = show ? '' : 'none';
+            });
+        }
+
+        function updateFilterCount() {
+            var count = 0;
+            if (activeFilters.type !== 'all') count++;
+            if (activeFilters.period !== '90d') count++;
+            if (activeFilters.search) count++;
+            var el = document.getElementById('filterCount');
+            if (count === 0) {
+                el.textContent = 'Nenhum filtro aplicado';
+            } else {
+                el.textContent = count + ' filtro' + (count > 1 ? 's' : '') + ' aplicado' + (count > 1 ? 's' : '');
+            }
+        }
+
+        /* ─── Toast ─── */
+        function showToast(message, type) {
+            type = type || 'success';
+            var container = document.getElementById('toastContainer');
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.setAttribute('role', 'status');
+            var icon = '';
+            if (type === 'success') icon = '&#10003; ';
+            else if (type === 'error') icon = '&#10007; ';
+            else if (type === 'info') icon = '&#8505; ';
+            toast.innerHTML = '<span aria-hidden="true">' + icon + '</span>' + message;
+            container.appendChild(toast);
+            setTimeout(function() {
+                toast.classList.add('removing');
+                setTimeout(function() {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }, 4000);
+        }
+
+        /* ─── Keyboard: Escape closes modals ─── */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (document.getElementById('rejectModal').classList.contains('active')) {
+                    closeRejectModalAction();
+                }
+            }
+        });
+
+        /* ─── Initialize filter count ─── */
+        updateFilterCount();
+    </script>
+</body>
+</html>
