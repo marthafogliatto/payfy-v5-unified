@@ -493,7 +493,7 @@
         }
 
         .kpi-trend.up { color: var(--success-green); }
-        .kpi-trend.stable { color: var(--gray-500); }
+        .kpi-trend.stable { color: var(--gray-700); }
 
         /* Override Hierarchy */
         .hierarchy-section {
@@ -593,7 +593,7 @@
             font-size: 12px;
             font-weight: 600;
             background: var(--gray-100);
-            color: var(--gray-600);
+            color: var(--gray-700);
         }
 
         .decision-grid {
@@ -652,13 +652,13 @@
             margin-bottom: var(--spacing-sm);
         }
 
-        .rec-approved { background: var(--success-green-light); color: var(--success-green); }
-        .rec-review { background: var(--warning-yellow-light); color: var(--warning-yellow); }
-        .rec-rejected { background: var(--danger-red-light); color: var(--danger-red); }
+        .rec-approved { background: var(--badge-agent-bg); color: var(--badge-agent-text); }
+        .rec-review { background: var(--badge-confidential-bg); color: var(--badge-confidential-text); }
+        .rec-rejected { background: var(--badge-flag-bg); color: var(--badge-flag-text); }
 
         .decision-rule {
             font-size: 12px;
-            color: var(--gray-500);
+            color: var(--gray-700);
             margin-bottom: var(--spacing-sm);
         }
 
@@ -1593,7 +1593,9 @@
             font-weight: 600;
         }
 
-        .sim-rec-badge.approved { background: var(--success-green-light); color: var(--success-green); }
+        .sim-rec-badge.approved { background: var(--badge-agent-bg); color: var(--badge-agent-text); }
+        .sim-rec-badge.review { background: var(--badge-confidential-bg); color: var(--badge-confidential-text); }
+        .sim-rec-badge.rejected { background: var(--badge-flag-bg); color: var(--badge-flag-text); }
 
         /* ==========================================
            SECTION 8: DRAWER — SUGESTOES DO AGENT
